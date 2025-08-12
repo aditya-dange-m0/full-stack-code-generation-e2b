@@ -1,98 +1,280 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🚀 AI Code Generator Backend with E2B Sandboxes
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS-based backend service that provides AI-powered code generation and execution using E2B sandboxes. This project enables secure execution of AI-generated code in isolated cloud environments.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🌟 Features
 
-## Description
+- **🔒 Secure Code Execution**: Run AI-generated code in isolated E2B sandboxes
+- **🏗️ Full-Stack Generation**: Create complete applications with backend (FastAPI) and frontend (Next.js)
+- **⚡ Multiple Setup Methods**: Fast manual setup and traditional create-next-app approaches
+- **📊 Real-time Monitoring**: Comprehensive logging and error handling
+- **🐳 Custom Docker Templates**: Pre-configured environments with Node.js, Python, and PM2
+- **🌐 CORS Support**: Ready for cross-origin requests
+- **🔄 Auto-cleanup**: Automatic sandbox lifecycle management
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Prerequisites
 
-## Project setup
+Before setting up the project, ensure you have:
+
+- **Node.js** (v18 or higher)
+- **npm** or **yarn**
+- **Docker Desktop** (running and accessible)
+- **E2B Account** (free at [e2b.dev](https://e2b.dev))
+
+## 🛠️ Installation
+
+### 1. Clone the Repository
 
 ```bash
-$ npm install
+git clone https://github.com/aditya-dange-m0/full-stack-code-generation-e2b.git
+cd ai-code-generator-backend
 ```
 
-## Compile and run the project
+### 2. Install Dependencies
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+### 3. Install E2B CLI Global Package
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install -g @e2b/cli
 ```
 
-## Deployment
+## 🔐 E2B Setup & Custom Sandbox Template
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Step 1: Authenticate with E2B
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+e2b auth login
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+This will open your browser to complete the authentication process.
 
-## Resources
+### Step 2: Build Custom Sandbox Template
 
-Check out a few resources that may come in handy when working with NestJS:
+Our project uses a custom sandbox template with pre-installed tools. Build it using:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+e2b template build --name nest-next-generator-sandbox .
+```
 
-## Support
+This command:
+- Uses the `e2b.Dockerfile` in the project root
+- Creates a custom template with Node.js, Python, PM2, and other tools
+- Registers the template with your E2B account
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Step 3: Get Your Template ID
 
-## Stay in touch
+After building, E2B will provide a template ID. You can also find it using:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+e2b template list
+```
 
-## License
+Look for `nest-next-generator-sandbox` in the output.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Step 4: Configure Environment Variables
+
+Create a `.env` file in the project root:
+
+```bash
+# E2B Configuration
+E2B_API_KEY="your_e2b_api_key_here"
+E2B_TEMPLATE_ID="nest-next-generator-sandbox"
+
+# Optional: Application Configuration
+PORT=3000
+```
+
+**To get your E2B API Key:**
+1. Visit [E2B Dashboard](https://e2b.dev/dashboard)
+2. Go to "API Keys" section
+3. Create a new API key
+4. Copy and paste it into your `.env` file
+
+## 🐳 Custom Docker Template Details
+
+Our `e2b.Dockerfile` includes:
+
+```dockerfile
+# Base: Ubuntu 22.04
+# Node.js: v20.x (Latest LTS)
+# Python: 3.11
+# Global Packages:
+#   - PM2 (Process Manager)
+#   - create-next-app
+#   - uvicorn (Python ASGI server)
+# Additional Tools:
+#   - curl, wget, git, unzip
+#   - build-essential
+```
+
+This ensures our sandboxes have all necessary tools pre-installed for faster execution.
+
+## 🚀 Running the Application
+
+### Development Mode
+
+```bash
+npm run start:dev
+```
+
+### Production Mode
+
+```bash
+npm run build
+npm run start:prod
+```
+
+The server will start on `http://localhost:3000` (or your configured PORT).
+
+## 🧪 API Endpoints
+
+### Core Testing Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/sandbox/test` | GET | Test basic sandbox functionality (PM2 version check) |
+| `/sandbox/test-backend-only` | GET | Test FastAPI backend setup in isolation |
+| `/sandbox/full-stack-test` | GET | Complete full-stack test (FastAPI + Next.js) |
+| `/sandbox/full-stack-test-optimized` | GET | Optimized full-stack test with fast setup |
+
+### Individual Component Tests
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/sandbox/create-nextjs-fast` | GET | Create Next.js app using fast manual setup |
+| `/sandbox/create-nextjs-original` | GET | Create Next.js app using create-next-app |
+
+### Example Responses
+
+#### Successful Full-Stack Test
+```json
+{
+  "backendUrl": "https://sandbox-id.e2b.dev:8000",
+  "frontendUrl": "https://sandbox-id.e2b.dev:3000"
+}
+```
+
+#### Backend-Only Test
+```json
+{
+  "backendUrl": "https://sandbox-id.e2b.dev:8000",
+  "testResult": "{\"message\": \"Hello from FastAPI Backend!\", \"status\": \"success\"}"
+}
+```
+
+## 🔧 Configuration Options
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `E2B_API_KEY` | ✅ | - | Your E2B API key |
+| `E2B_TEMPLATE_ID` | ✅ | - | Custom sandbox template ID |
+| `PORT` | ❌ | 3000 | Application port |
+
+### Timeout Configuration
+
+The service includes configurable timeouts for different operations:
+
+- **Regular commands**: 60 seconds
+- **Long commands**: 10 minutes  
+- **pip install**: 3 minutes
+- **npm install**: 5 minutes
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. Docker Not Running
+```
+Error: error during connect: Head "http://...": open //./pipe/dockerDesktopLinuxEngine
+```
+**Solution**: Start Docker Desktop and ensure it's running.
+
+#### 2. Invalid API Key
+```
+SandboxError: 401: Invalid API key
+```
+**Solution**: 
+- Check your `.env` file has the correct `E2B_API_KEY`
+- Verify the API key at [E2B Dashboard](https://e2b.dev/dashboard)
+
+#### 3. Template Not Found
+```
+Error: Template 'nest-next-generator-sandbox' not found
+```
+**Solution**: 
+- Run `e2b template build --name nest-next-generator-sandbox .`
+- Check `e2b template list` to verify the template exists
+
+#### 4. Timeout Errors
+```
+TimeoutError: [deadline_exceeded] the operation timed out
+```
+**Solution**: 
+- Try the optimized endpoint: `/sandbox/full-stack-test-optimized`
+- Check your internet connection
+- Increase timeout values if needed
+
+### Debug Logs
+
+Enable detailed logging by checking the console output. The service provides comprehensive logs for:
+- Sandbox creation and lifecycle
+- Command execution with stdout/stderr
+- File operations and service startup
+- Error details with full context
+
+### Testing Strategy
+
+1. **Start Simple**: Test `/sandbox/test` first
+2. **Isolate Issues**: Use `/sandbox/test-backend-only` for backend problems
+3. **Try Optimized**: Use `/sandbox/full-stack-test-optimized` for faster execution
+4. **Fallback**: Use `/sandbox/full-stack-test` if optimized version fails
+
+## 📁 Project Structure
+
+```
+src/
+├── sandbox/
+│   ├── sandbox.controller.ts    # API endpoints
+│   ├── sandbox.service.ts       # Core sandbox logic
+│   ├── sandbox.module.ts        # NestJS module
+│   └── templates.ts             # FastAPI & Next.js templates
+├── app.module.ts                # Main application module
+└── main.ts                      # Application entry point
+e2b.Dockerfile                   # Custom sandbox template
+e2b.toml                         # E2B configuration
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -m 'Add feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Open a Pull Request
+
+## 📚 Documentation
+
+- [E2B Documentation](https://e2b.dev/docs)
+- [NestJS Documentation](https://docs.nestjs.com)
+- [FastAPI Documentation](https://fastapi.tiangolo.com)
+- [Next.js Documentation](https://nextjs.org/docs)
+
+## 📄 License
+
+This project is [MIT licensed](LICENSE).
+
+## 🆘 Support
+
+- **Issues**: [GitHub Issues](https://github.com/aditya-dange-m0/full-stack-code-generation-e2b/issues)
+- **E2B Support**: [E2B Discord](https://discord.gg/U7KEcGErtQ)
+- **NestJS Support**: [NestJS Discord](https://discord.gg/G7Qnnhy)
+
+---
+
+**Made with ❤️ using NestJS and E2B**
