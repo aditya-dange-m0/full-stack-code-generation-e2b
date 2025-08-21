@@ -1,0 +1,16 @@
+# This is a config for E2B sandbox template.
+# You can use template ID (c4lx0cdsllxfat3o0wsl) or template name (react-fastapi-sandbox) to create a sandbox:
+
+# Python SDK
+# from e2b import Sandbox, AsyncSandbox
+# sandbox = Sandbox("react-fastapi-sandbox") # Sync sandbox
+# sandbox = await AsyncSandbox.create("react-fastapi-sandbox") # Async sandbox
+
+# JS SDK
+# import { Sandbox } from 'e2b'
+# const sandbox = await Sandbox.create('react-fastapi-sandbox')
+
+team_id = "e66bba55-d673-4ef7-bc35-4e6e172ca213"
+dockerfile = "e2b.Dockerfile"
+template_name = "react-fastapi-sandbox"
+template_id = "c4lx0cdsllxfat3o0wsl"

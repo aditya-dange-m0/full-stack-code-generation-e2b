@@ -1,0 +1,46 @@
+# e2b.Dockerfile
+
+# Use an E2B base image that includes common tools
+FROM e2bdev/code-interpreter:latest
+
+# Set environment to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# --- Base Dependencies ---
+# We ensure curl, gnupg for adding repositories, and netcat for health checks are present.
+RUN apt-get update && apt-get install -y \
+    curl \
+    lsb-release \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- MongoDB Installation ---
+# 1. Import the MongoDB public GPG Key
+RUN curl -fsSL https://pgp.mongodb.com/server-6.0.asc | \
+   gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+
+# 2. Create a list file for MongoDB
+RUN echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/6.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+
+# 3. Update package list and install MongoDB server
+RUN apt-get update && apt-get install -y mongodb-org
+
+# 4. Pre-install Python packages for MongoDB
+RUN pip3 install --no-cache-dir uvicorn pymongo motor
+
+# 5. Pre-install Node.js packages
+RUN npm install -g \
+    create-react-app \
+    pm2
+
+# --- Create MongoDB data directory ---
+RUN mkdir -p /data/db && chown -R mongodb:mongodb /data/db
+
+# --- Final Cleanup ---
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set the default working directory for the sandbox sessions
+WORKDIR /home
+
+# Note: We do NOT start the service here. We only INSTALL it.
+# The service will be started on-demand by our SandboxService at runtime.
+CMD ["/bin/bash"]

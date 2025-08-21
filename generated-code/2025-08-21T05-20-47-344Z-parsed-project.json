@@ -1,0 +1,83 @@
+{
+  "projectName": "Todo App",
+  "projectDescription": "A full-stack Todo application with CRUD operations using Next.js, FastAPI, and MongoDB.",
+  "template": "next+fastapi+mongodb",
+  "code": {
+    "frontend": {
+      "framework": "next",
+      "files": {
+        "/app/page.tsx": {
+          "purpose": "Main page component using App Router",
+          "code": "\"use client\";\n\nimport { useState, useEffect } from 'react';\n\ninterface Todo {\n  _id: string;\n  title: string;\n  completed: boolean;\n}\n\nexport default function Home() {\n  const [todos, setTodos] = useState<Todo[]>([]);\n  const [title, setTitle] = useState('');\n  const [loading, setLoading] = useState(false);\n  const [error, setError] = useState('');\n\n  useEffect(() => {\n    fetchTodos();\n  }, []);\n\n  const fetchTodos = async () => {\n    setLoading(true);\n    try {\n      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/todos');\n      const data = await response.json();\n      setTodos(data);\n    } catch (error) {\n      setError('Failed to load todos');\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  const addTodo = async () => {\n    if (!title) return;\n    setLoading(true);\n    try {\n      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + '/api/todos', {\n        method: 'POST',\n        headers: {\n          'Content-Type': 'application/json'\n        },\n        body: JSON.stringify({ title })\n      });\n      await response.json();\n      setTitle('');\n      fetchTodos();\n    } catch (error) {\n      setError('Failed to add todo');\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  const deleteTodo = async (id: string) => {\n    setLoading(true);\n    try {\n      await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/todos/${id}`, {\n        method: 'DELETE'\n      });\n      fetchTodos();\n    } catch (error) {\n      setError('Failed to delete todo');\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  const toggleTodo = async (id: string, completed: boolean) => {\n    setLoading(true);\n    try {\n      await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + `/api/todos/${id}`, {\n        method: 'PATCH',\n        headers: {\n          'Content-Type': 'application/json'\n        },\n        body: JSON.stringify({ completed: !completed })\n      });\n      fetchTodos();\n    } catch (error) {\n      setError('Failed to update todo');\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  return (\n    <main className=\"min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4\">\n      <div className=\"max-w-md mx-auto bg-white rounded-xl shadow-lg p-8\">\n        <h1 className=\"text-3xl font-bold text-gray-800 mb-4\">Todo App</h1>\n        <div className=\"mb-4\">\n          <input \n            type=\"text\" \n            className=\"border border-gray-300 rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500\"\n            placeholder=\"Add new todo\"\n            value={title}\n            onChange={(e) => setTitle(e.target.value)}\n          />\n          <button \n            onClick={addTodo} \n            className=\"mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200\"\n            disabled={loading}\n          >\n            Add Todo\n          </button>\n        </div>\n        {error && <p className=\"text-red-500 mb-4\">{error}</p>}\n        {loading ? (\n          <p>Loading...</p>\n        ) : (\n          <ul className=\"space-y-2\">\n            {todos.map((todo) => (\n              <li key={todo._id} className=\"flex items-center justify-between bg-white p-4 rounded-lg shadow border\">\n                <span className={`${todo.completed ? 'line-through' : ''}`}>{todo.title}</span>\n                <div className=\"space-x-2\">\n                  <button \n                    onClick={() => toggleTodo(todo._id, todo.completed)}\n                    className=\"bg-green-500 hover:bg-green-600 text-white py-1 px-2 rounded\"\n                  >\n                    {todo.completed ? 'Undo' : 'Complete'}\n                  </button>\n                  <button \n                    onClick={() => deleteTodo(todo._id)}\n                    className=\"bg-red-500 hover:bg-red-600 text-white py-1 px-2 rounded\"\n                  >\n                    Delete\n                  </button>\n                </div>\n              </li>\n            ))}\n          </ul>\n        )}\n      </div>\n    </main>\n  );\n}"
+        },
+        "/app/layout.tsx": {
+          "purpose": "Root layout component",
+          "code": "import './globals.css';\n\nexport const metadata = {\n  title: 'Todo App',\n  description: 'A full-featured Todo application'\n};\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {\n  return (\n    <html lang=\"en\">\n      <body className=\"font-sans antialiased\">{children}</body>\n    </html>\n  );\n}"
+        },
+        "/app/globals.css": {
+          "purpose": "Global styles with Tailwind CSS",
+          "code": "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\nbody {\n  margin: 0;\n  padding: 0;\n}"
+        }
+      },
+      "dependencies": {
+        "package.json": {
+          "purpose": "Next.js package configuration",
+          "code": "{\n  \"name\": \"frontend\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"next dev\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",\n    \"lint\": \"next lint\"\n  },\n  \"dependencies\": {\n    \"next\": \"14.0.4\",\n    \"react\": \"^18\",\n    \"react-dom\": \"^18\",\n    \"@types/node\": \"^20\",\n    \"@types/react\": \"^18\",\n    \"@types/react-dom\": \"^18\",\n    \"typescript\": \"^5\"\n  },\n  \"devDependencies\": {\n    \"tailwindcss\": \"^3.3.0\",\n    \"autoprefixer\": \"^10.4.14\",\n    \"postcss\": \"^8.4.24\"\n  }\n}"
+        }
+      }
+    },
+    "backend": {
+      "framework": "fastapi",
+      "files": {
+        "/main.py": {
+          "purpose": "FastAPI main application",
+          "code": "from fastapi import FastAPI, HTTPException\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom pydantic import BaseModel\nfrom pymongo import MongoClient\nfrom bson import ObjectId\n\napp = FastAPI()\n\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\nclient = MongoClient('mongodb://localhost:27017/')\ndb = client.todoapp\ntodos_collection = db.todos\n\nclass TodoModel(BaseModel):\n    title: str\n    completed: bool = False\n\n@app.get(\"/api/todos\")\nasync def get_todos():\n    todos = list(todos_collection.find())\n    for todo in todos:\n        todo[\"_id\"] = str(todo[\"_id\"])\n    return todos\n\n@app.post(\"/api/todos\")\nasync def create_todo(todo: TodoModel):\n    result = todos_collection.insert_one(todo.dict())\n    return {\"_id\": str(result.inserted_id)}\n\n@app.delete(\"/api/todos/{todo_id}\")\nasync def delete_todo(todo_id: str):\n    result = todos_collection.delete_one({\"_id\": ObjectId(todo_id)})\n    if result.deleted_count == 0:\n        raise HTTPException(status_code=404, detail=\"Todo not found\")\n    return {\"message\": \"Todo deleted\"}\n\n@app.patch(\"/api/todos/{todo_id}\")\nasync def update_todo(todo_id: str, todo: TodoModel):\n    result = todos_collection.update_one({\"_id\": ObjectId(todo_id)}, {\"$set\": todo.dict()})\n    if result.matched_count == 0:\n        raise HTTPException(status_code=404, detail=\"Todo not found\")\n    return {\"message\": \"Todo updated\"}\n\n@app.on_event(\"startup\")\nasync def startup_event():\n    try:\n        client.admin.command('ping')\n        print(\"MongoDB connection successful!\")\n    except Exception as e:\n        print(f\"MongoDB connection failed: {e}\")\n\n@app.get(\"/health\")\ndef health_check():\n    try:\n        client.admin.command('ping')\n        return {\"status\": \"healthy\", \"database\": \"connected\"}\n    except Exception as e:\n        return {\"status\": \"unhealthy\", \"database\": \"disconnected\", \"error\": str(e)}"
+        }
+      },
+      "dependencies": {
+        "requirements.txt": {
+          "purpose": "Python dependencies",
+          "code": "fastapi==0.104.1\nuvicorn==0.24.0\npymongo==4.6.0"
+        }
+      }
+    }
+  },
+  "projectStructure": {
+    "frontend": "frontend/\n├── app/\n│   ├── layout.tsx\n│   ├── page.tsx\n└── package.json",
+    "backend": "backend/\n├── main.py\n└── requirements.txt"
+  },
+  "databaseSchema": {
+    "collections": [
+      {
+        "name": "todos",
+        "purpose": "Stores todo items",
+        "schema": {
+          "title": "string",
+          "completed": "boolean"
+        }
+      }
+    ]
+  },
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/api/todos",
+      "purpose": "Retrieve all todos"
+    },
+    {
+      "method": "POST",
+      "path": "/api/todos",
+      "purpose": "Create a new todo"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/todos/{todo_id}",
+      "purpose": "Delete a todo by ID"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/todos/{todo_id}",
+      "purpose": "Update a todo by ID"
+    }
+  ]
+}

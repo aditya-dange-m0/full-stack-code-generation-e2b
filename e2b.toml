@@ -1,16 +1,16 @@
 # This is a config for E2B sandbox template.
-# You can use template ID (mldvpasmk2lyg4mo0i85) or template name (nest-next-generator-sandbox) to create a sandbox:
+# You can use template ID (wdwd49txcy2xytlzuh4t) or template name (next-fast-mongo-base-sandbox) to create a sandbox:
 
 # Python SDK
 # from e2b import Sandbox, AsyncSandbox
-# sandbox = Sandbox("nest-next-generator-sandbox") # Sync sandbox
-# sandbox = await AsyncSandbox.create("nest-next-generator-sandbox") # Async sandbox
+# sandbox = Sandbox("next-fast-mongo-base-sandbox") # Sync sandbox
+# sandbox = await AsyncSandbox.create("next-fast-mongo-base-sandbox") # Async sandbox
 
 # JS SDK
 # import { Sandbox } from 'e2b'
-# const sandbox = await Sandbox.create('nest-next-generator-sandbox')
+# const sandbox = await Sandbox.create('next-fast-mongo-base-sandbox')
 
 team_id = "e66bba55-d673-4ef7-bc35-4e6e172ca213"
 dockerfile = "e2b.Dockerfile"
-template_name = "nest-next-generator-sandbox"
-template_id = "mldvpasmk2lyg4mo0i85"
+template_name = "next-fast-mongo-base-sandbox"
+template_id = "wdwd49txcy2xytlzuh4t"

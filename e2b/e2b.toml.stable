@@ -1,0 +1,20 @@
+# This is a config for E2B stable sandbox template.
+# Optimized for FastAPI + Next.js applications with better stability
+
+team_id = "e66bba55-d673-4ef7-bc35-4e6e172ca213"
+dockerfile = "e2b.Dockerfile.stable"
+template_name = "stable-fastapi-nextjs-sandbox"
+
+# Instructions to build and use this template:
+# 1. Build the template: e2b template build --name stable-fastapi-nextjs-sandbox
+# 2. Update your .env file with the new template ID
+# 3. Use the new template in your SandboxService
+
+# Key improvements in this template:
+# - Ubuntu 22.04 LTS base (more stable than code-interpreter)
+# - Python 3.11 with latest FastAPI and Uvicorn
+# - Node.js 20 LTS for Next.js applications
+# - Pre-installed MongoDB with Python drivers
+# - Supervisor for better process management
+# - Optimized for long-running processes
+# - Better resource management

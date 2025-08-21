@@ -1,46 +1,90 @@
-# e2b.Dockerfile
+# e2b.Dockerfile.stable
+# Custom E2B template optimized for FastAPI + Next.js applications
 
-# Use a modern, stable base image. Ubuntu 22.04 is an excellent choice for web servers.
+# Use Ubuntu 22.04 LTS as base for better stability
 FROM ubuntu:22.04
 
-# Set environment variables to prevent interactive prompts during installation
+# Set environment to avoid interactive prompts
 ENV DEBIAN_FRONTEND=noninteractive
-# Add the Node.js global bin directory to the path for tools like pm2
-ENV PATH="/usr/local/bin:${PATH}"
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 
-# 1. INSTALL SYSTEM DEPENDENCIES & CORE RUNTIMES
+# --- System Update and Base Dependencies ---
 RUN apt-get update && apt-get install -y \
-    curl \
     wget \
-    git \
-    unzip \
-    build-essential \
+    curl \
+    software-properties-common \
+    ca-certificates \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- Python 3.11 Installation ---
+RUN add-apt-repository ppa:deadsnakes/ppa && \  
+    apt-get update && \
+    apt-get install -y \
     python3.11 \
-    python3-pip
+    python3.11-dev \
+    python3.11-venv \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
 
-# 2. CONFIGURE NODE.JS ENVIRONMENT (using NodeSource for a modern version)
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-RUN apt-get install -y nodejs
+# Create symlinks for python3
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python
 
-# 3. CONFIGURE PYTHON ENVIRONMENT
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-RUN pip3 install --no-cache-dir --upgrade pip
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip setuptools wheel
 
-# 4. PRE-INSTALL GLOBAL PACKAGES FOR SPEED & STABILITY
-# For Python (FastAPI):
-RUN pip3 install --no-cache-dir uvicorn
-# For Node.js (Next.js):
+# --- Node.js 20 LTS Installation ---
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Pre-install Common Python Packages for FastAPI ---
+RUN python3 -m pip install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    pydantic==2.5.0 \
+    requests==2.31.0 
+
+# --- MongoDB Installation (Optional) ---
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | apt-key add - && \
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
+    apt-get update && \
+    apt-get install -y mongodb-org && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Pre-install MongoDB Python drivers ---
+RUN python3 -m pip install --no-cache-dir \
+    pymongo==4.6.0 
+
+# --- Node.js Global Packages ---
 RUN npm install -g \
-    create-next-app \
-    pm2
+    typescript@latest \
+    @types/node@latest \
+    pm2@latest \
+    create-next-app@latest \
+    nodemon@latest
 
-# 5. CLEANUP
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /root/.npm
+# --- Create necessary directories ---
+RUN mkdir -p /data/db && \
+    mkdir -p /tmp/logs && \
+    mkdir -p /home/projects
 
-# Set the default working directory for the sandbox sessions
+# --- Setup MongoDB data directory ---
+RUN chown -R mongodb:mongodb /data/db
+
+# --- Environment Variables ---
+ENV PATH="/home/developer/.local/bin:$PATH"
+ENV PYTHONPATH="/home/projects"
+ENV NODE_ENV=development
+
+# --- Final cleanup ---
+RUN apt-get autoremove -y && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set working directory
 WORKDIR /home
-
-# The sandbox is now ready.
+# Set the default command
 CMD ["/bin/bash"]

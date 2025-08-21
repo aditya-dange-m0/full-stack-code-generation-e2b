@@ -1,0 +1,207 @@
+# Lightweight E2B template for FastAPI + Next.js
+# Optimized for fast builds and stability
+
+FROM node:20-slim
+
+# Prevent interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install essential dependencies only
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    build-essential \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create python symlink
+RUN ln -sf /usr/bin/python3 /usr/bin/python
+
+# Install essential Python packages
+RUN pip3 install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    requests \
+    python-multipart
+
+# Install essential Node.js packages globally
+RUN npm install -g \
+    typescript \
+    pm2 \
+    nodemon
+
+# Create user for better security
+RUN useradd -m -s /bin/bash user
+
+# Set working directory
+WORKDIR /home/user
+
+# Change ownership
+RUN chown -R user:user /home/user
+
+# Switch to user
+USER user
+
+# Create directories for projects
+RUN mkdir -p /home/user/projects /home/user/backend /home/user/frontend
+
+# Set default command
+CMD ["/bin/bash"]
+
+
+
+
+
+
+
+# e2b.Dockerfile.stable
+# Custom E2B template optimized for FastAPI + Next.js applications
+
+# Use Ubuntu 22.04 LTS as base for better stability
+FROM ubuntu:22.04
+
+# Set environment to avoid interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+# --- System Update and Base Dependencies ---
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    git \
+    unzip \
+    software-properties-common \
+    build-essential \
+    pkg-config \
+    lsb-release \
+    gnupg \
+    ca-certificates \
+    apt-transport-https \
+    supervisor \
+    htop \
+    vim \
+    nano \
+    net-tools \
+    psmisc \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- Python 3.11 Installation ---
+RUN add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y \
+    python3.11 \
+    python3.11-dev \
+    python3.11-venv \
+    python3-pip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create symlinks for python3
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python
+
+# Upgrade pip
+RUN python3 -m pip install --upgrade pip setuptools wheel
+
+# --- Node.js 20 LTS Installation ---
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Pre-install Common Python Packages for FastAPI ---
+RUN python3 -m pip install --no-cache-dir \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
+    pydantic==2.5.0 \
+    python-multipart==0.0.6 \
+    python-jose[cryptography]==3.3.0 \
+    passlib[bcrypt]==1.7.4 \
+    aiofiles==23.2.1 \
+    jinja2==3.1.2 \
+    python-dotenv==1.0.0 \
+    requests==2.31.0 \
+    httpx==0.25.0 \
+    pytest==7.4.3 \
+    pytest-asyncio==0.21.1
+
+# --- MongoDB Installation (Optional) ---
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-7.0.asc | apt-key add - && \
+    echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
+    apt-get update && \
+    apt-get install -y mongodb-org && \
+    rm -rf /var/lib/apt/lists/*
+
+# --- Pre-install MongoDB Python drivers ---
+RUN python3 -m pip install --no-cache-dir \
+    pymongo==4.6.0 \
+    motor==3.3.2 \
+    beanie==1.24.0
+
+# --- Node.js Global Packages ---
+RUN npm install -g \
+    typescript@5.3.0 \
+    @types/node@20.0.0 \
+    pm2@5.3.0 \
+    create-next-app@14.0.0 \
+    nodemon@3.0.0
+
+# --- Create necessary directories ---
+RUN mkdir -p /data/db && \
+    mkdir -p /tmp/logs && \
+    mkdir -p /home/projects && \
+    mkdir -p /var/log/supervisor
+
+# --- Setup MongoDB data directory ---
+RUN chown -R mongodb:mongodb /data/db
+
+# --- Setup user and permissions ---
+RUN useradd -m -s /bin/bash developer && \
+    usermod -aG sudo developer && \
+    echo "developer ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# --- Create supervisor configuration for process management ---
+RUN echo '[supervisord]\n\
+nodaemon=true\n\
+user=root\n\
+logfile=/var/log/supervisor/supervisord.log\n\
+pidfile=/var/run/supervisord.pid\n\
+\n\
+[unix_http_server]\n\
+file=/var/run/supervisor.sock\n\
+chmod=0700\n\
+\n\
+[rpcinterface:supervisor]\n\
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface\n\
+\n\
+[supervisorctl]\n\
+serverurl=unix:///var/run/supervisor.sock\n' > /etc/supervisor/conf.d/supervisord.conf
+
+# --- Environment Variables ---
+ENV PATH="/home/developer/.local/bin:$PATH"
+ENV PYTHONPATH="/home/projects:$PYTHONPATH"
+ENV NODE_ENV=development
+
+# --- Final cleanup ---
+RUN apt-get autoremove -y && \
+    apt-get autoclean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Set working directory
+WORKDIR /home
+
+# Create startup script
+RUN echo '#!/bin/bash\n\
+echo "E2B Custom FastAPI Template Starting..."\n\
+echo "Python version: $(python3 --version)"\n\
+echo "Node.js version: $(node --version)"\n\
+echo "FastAPI version: $(python3 -c \"import fastapi; print(fastapi.__version__)\")"\n\
+echo "Ready for development!"\n\
+exec "$@"\n' > /startup.sh && chmod +x /startup.sh
+
+# Set the default command
+CMD ["/startup.sh", "/bin/bash"]

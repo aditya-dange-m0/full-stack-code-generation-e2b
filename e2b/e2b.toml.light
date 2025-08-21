@@ -1,0 +1,48 @@
+# Lightweight E2B template configuration
+# Fast build, minimal dependencies
+
+team_id = "e66bba55-d673-4ef7-bc35-4e6e172ca213"
+dockerfile = "e2b.Dockerfile.light"
+template_name = "light-fastapi-nextjs"
+
+# This template focuses on:
+# - Fast build times
+# - Essential dependencies only
+# - Node.js 20 with TypeScript, PM2, Nodemon
+# - Python 3 with FastAPI and Uvicorn
+# - Minimal system packages
+
+
+
+
+
+
+✅ Building sandbox template wdwd49txcy2xytlzuh4t next-fast-mongo-base-sandbox finished.
+
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                                                                         │
+│  You can now use the template to create custom sandboxes.                                                                               │
+│  Learn more on https://e2b.dev/docs                                                                                                     │
+│                                                                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ ────────────────────────────────────────────────────────────── Python SDK ─────────────────────────────────────────────────────────────── 
+
+   from e2b import Sandbox, AsyncSandbox
+
+   # Create sync sandbox
+   sandbox = Sandbox("next-fast-mongo-base-sandbox")
+
+   # Create async sandbox
+   sandbox = await AsyncSandbox.create("next-fast-mongo-base-sandbox")
+
+ ──────────────────────────────────────────────────────────────── JS SDK ───────────────────────────────────────────────────────────────── 
+
+   import { Sandbox } from 'e2b'
+
+   // Create sandbox
+   const sandbox = await Sandbox.create('next-fast-mongo-base-sandbox')
+
+ ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+
+PS C:\Users\Aditya\Desktop\Mastra-Memory\e2b\ai-code-generator-backend> 
